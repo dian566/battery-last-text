@@ -15,11 +15,16 @@ TEXT = (
 DESTINATION = Path("/output/entry.txt")
 
 
+MAX_LENGTH = 199
+
+
 def build_entry() -> str:
     message = TEXT.strip()
     size = len(message)
-    if size < 1 or size > 199:
-        raise ValueError(f"entry length {size} is outside the 1-199 range")
+    if size < 1 or size > MAX_LENGTH:
+        raise ValueError(f"entry length {size} is outside the 1-{MAX_LENGTH} range")
+    if "\n" in message or "\r" in message:
+        raise ValueError("entry must be exactly one line")
     return message
 
 
