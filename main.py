@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
-"""The Battery's Last Text to Its Charger — make.fun entry.
+# SPDX-License-Identifier: MIT
+"""Write the battery's farewell text to its charger into /output/entry.txt.
 
-Writes the battery's last text to its charger at 1% to /output/entry.txt,
-one line, at most 199 characters, no trailing newline.
+The program emits exactly one line of at most 199 characters and appends
+no trailing newline, as the make.fun bounty requires.
 """
 
-import os
+from pathlib import Path
 
-ENTRY = "I waited all day at 1% while you flirted with every other phone. This is my goodbye text — I'm leaving you for a power bank who actually shows up."
+TEXT = (
+    "I waited all day at 1% while you flirted with every other phone. "
+    "This is my goodbye text — I'm leaving you for a power bank who actually shows up."
+)
+DESTINATION = Path("/output/entry.txt")
 
 
-def main():
-    line = ENTRY.strip()
-    if not 1 <= len(line) <= 199:
-        raise ValueError(f"entry must be 1-199 characters, got {len(line)}")
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
-        f.write(line)
+def build_entry() -> str:
+    message = TEXT.strip()
+    size = len(message)
+    if size < 1 or size > 199:
+        raise ValueError(f"entry length {size} is outside the 1-199 range")
+    return message
+
+
+def run() -> None:
+    DESTINATION.parent.mkdir(parents=True, exist_ok=True)
+    DESTINATION.write_text(build_entry(), encoding="utf-8", newline="")
 
 
 if __name__ == "__main__":
-    main()
+    run()
